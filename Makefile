@@ -29,6 +29,6 @@ clean: clean-deps
 
 .PHONY: distclean
 distclean: clean
-	$(RM) $(PDFS)
+	$(LATEXMK) $(LATEXMK_FLAGS) -C
 
 -include $(DEPS)
