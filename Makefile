@@ -11,18 +11,24 @@ source_date_epoch = $(shell \
 %.pdf: export SOURCE_DATE_EPOCH = $(call source_date_epoch,$<)
 
 PDFS = article.pdf beamer.pdf
+DEPS = $(PDFS:.pdf=.d)
 
 .PHONY: all
 all: $(PDFS)
 
-.PHONY: $(PDFS)
 $(PDFS): %.pdf: %.tex
-	$(LATEXMK) $(LATEXMK_FLAGS) -pdf $<
+	$(LATEXMK) $(LATEXMK_FLAGS) -pdf -M -MP -MF $*.d $*
+
+.PHONY: clean-deps
+clean-deps:
+	$(RM) $(DEPS)
 
 .PHONY: clean
-clean:
+clean: clean-deps
 	$(LATEXMK) $(LATEXMK_FLAGS) -c
 
 .PHONY: distclean
 distclean: clean
 	$(RM) $(PDFS)
+
+-include $(DEPS)
