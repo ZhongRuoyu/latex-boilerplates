@@ -10,8 +10,9 @@ source_date_epoch = $(shell \
 )
 %.pdf: export SOURCE_DATE_EPOCH = $(call source_date_epoch,$<)
 
-PDFS = article.pdf beamer.pdf
-DEPS = $(PDFS:.pdf=.d)
+TARGETS = article beamer
+PDFS = $(addsuffix .pdf,$(TARGETS))
+DEPS = $(addsuffix .d,$(TARGETS))
 
 .PHONY: all
 all: $(PDFS)
