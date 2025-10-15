@@ -17,7 +17,7 @@ DEPS = $(addsuffix .d,$(TARGETS))
 .PHONY: all
 all: $(PDFS)
 
-%.pdf: %.tex
+$(sort $(PDFS) $(MAKECMDGOALS)): %.pdf: %.tex
 	$(LATEXMK) $(LATEXMK_FLAGS) -pdf -M -MP -MF $*.d $*
 
 .PHONY: clean-deps
