@@ -5,7 +5,7 @@ ifeq ($(findstring B,$(MAKEFLAGS)),B)
 endif
 
 source_date_epoch = $(shell \
-	git_time="$$(git log -1 --format=%at -- "$(1)")" && \
+	git_time="$$(git log -1 --format=%at -- "$(1)" 2>/dev/null)" && \
 	test -n "$$git_time" && echo "$$git_time" || date -r "$(1)" +%s \
 )
 %.pdf: export SOURCE_DATE_EPOCH = $(call source_date_epoch,$<)
