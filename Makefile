@@ -26,10 +26,10 @@ clean-deps:
 
 .PHONY: clean
 clean: clean-deps
-	$(LATEXMK) $(LATEXMK_FLAGS) -c
+	$(LATEXMK) $(LATEXMK_FLAGS) -c $(TARGETS)
 
 .PHONY: distclean
 distclean: clean
-	$(LATEXMK) $(LATEXMK_FLAGS) -C
+	$(LATEXMK) $(LATEXMK_FLAGS) -C $(TARGETS)
 
 -include $(DEPS)
