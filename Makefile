@@ -4,12 +4,6 @@ ifeq ($(findstring B,$(MAKEFLAGS)),B)
 	LATEXMK_FLAGS += -g
 endif
 
-source_date_epoch = $(shell \
-	git_time="$$(git log -1 --format=%at -- "$(1)" 2>/dev/null)" && \
-	test -n "$$git_time" && echo "$$git_time" || date -r "$(1)" +%s \
-)
-%.pdf: export SOURCE_DATE_EPOCH = $(call source_date_epoch,$<)
-
 TARGETS = article beamer
 PDFS = $(addsuffix .pdf,$(TARGETS))
 DEPS = $(addsuffix .d,$(TARGETS))
@@ -17,7 +11,15 @@ DEPS = $(addsuffix .d,$(TARGETS))
 .PHONY: all
 all: $(PDFS)
 
-$(sort $(PDFS) $(MAKECMDGOALS)): %.pdf: %.tex
+source_date_epoch = $(shell \
+	git_time="$$(git log -1 --format=%at -- "$(1)" 2>/dev/null)" && \
+	test -n "$$git_time" && \
+	echo "$$git_time" || \
+	date -r "$(1)" +%s \
+)
+ALL_PDFS = $(sort $(PDFS) $(filter %.pdf,$(MAKECMDGOALS)))
+$(ALL_PDFS): export SOURCE_DATE_EPOCH = $(call source_date_epoch,$(@:.pdf=.tex))
+$(ALL_PDFS): %.pdf: %.tex
 	$(LATEXMK) $(LATEXMK_FLAGS) -pdf -M -MP -MF $*.d $*
 
 .PHONY: clean-deps
