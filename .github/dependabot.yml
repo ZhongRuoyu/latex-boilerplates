@@ -6,7 +6,7 @@ updates:
     allow:
       - dependency-type: all
     schedule:
-      interval: monthly
+      interval: weekly
     cooldown:
       default-days: 7
     groups:
