@@ -1,4 +1,4 @@
-name: Build PDFs
+name: Build
 
 on:
   push:
@@ -12,29 +12,32 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+permissions: {}
+
+defaults:
+  run:
+    shell: bash -euxo pipefail {0}
+
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
-    container: ghcr.io/zhongruoyu/texlive:latest
-    defaults:
-      run:
-        shell: bash -euxo pipefail {0}
+    container: ghcr.io/zhongruoyu/texlive:latest # zizmor: ignore[unpinned-images]
+    permissions:
+      contents: read
     steps:
       - name: Check out repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-
       # https://github.com/actions/checkout/issues/1169
       - name: Configure Git safe directory
         run: |
           touch ~/.gitconfig
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
       - name: Build PDFs
         run: |
           make
-
       - name: Upload PDFs as artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
